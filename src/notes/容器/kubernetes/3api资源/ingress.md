@@ -1,3 +1,18 @@
+# Ingress 配置
+
+annotations 自定义块配置
+
+```
+# configuration-snippet
+用于 插入到请求处理的配置部分，通常用于定制请求头、响应头、负载均衡等细粒度的配置。
+
+# server-snippet
+用于 插入到虚拟主机级别的配置，通常用于修改虚拟主机的 listen、server_name 等配置。
+
+```
+
+
+
 限流
 
 ```

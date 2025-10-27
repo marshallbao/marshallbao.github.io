@@ -2,8 +2,6 @@
 
 
 
-
-
 ### Pipline 环境变量
 
 | 方式                  | 声明位置    | 作用域 | 可修改性                   |
@@ -55,3 +53,6 @@ currentBuild.result 各种结果值 & 控制流场景
 | ABORTED        | 已终止 | 构建会显示灰色 ⏹，类似用户点击 停止   | 在不满足条件时退出：currentBuild.result = 'ABORTED'``return  |
 | UNSTABLE       | 不稳定 | 构建继续执行，但最后标记为黄色 ⚠️      | 单测失败、lint 不通过但不阻塞发布                            |
 | NOT_BUILT      | 未构建 | Stage 被跳过，或 Job 没触发，显示灰色 | 一般由 when {} 或 skipStagesAfterUnstable() 导致             |
+
+
+

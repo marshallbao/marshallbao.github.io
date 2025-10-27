@@ -1,3 +1,5 @@
+# Sandbox
+
 关于 mesos 通过sandbox捕获 容器打印到console(控制台/终端)的日志
 
 mesos运行的docker容器，容器打印到前台console的日志会记录到mesos的work目录中容器沙箱中stdout和stderr文件中，容器不重启，日志会一直变大，这样会到只宿主空间变大。

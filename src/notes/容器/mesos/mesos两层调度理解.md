@@ -1,3 +1,5 @@
+# mesos 两层调度
+
 mesos的核心架构：
 
   ![file://c:\users\baoyon~1\appdata\local\temp\tmpdkdu_6\1.png](Untitled.assets/1.png)
@@ -34,8 +36,3 @@ mesos的核心架构：
 ​    agent以固定的频率向master汇报自己所在节点的资源（cpu，内存，磁盘），master向Framework resource offer，用户操作Framework生成任务，然后Framework的scheduler响应master的邀约（如果没有任务则会拒绝邀约），选择自己需要的资源之后向master下发任务，master在接收到任务后向slave下发任务，slave调度（Framework的）执行器来执行任务；
 ​    目前先理解为这个样子；
 ​    mesos的双层调度架构还是很强的，可扩展的Framework使得大型调度得以轻松实现；更深一层的声明了资源和服务的关系，未来不可限量；
-​    
-​    
-​    
-​    
-​    

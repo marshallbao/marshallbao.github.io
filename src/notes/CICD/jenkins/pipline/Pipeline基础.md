@@ -56,6 +56,14 @@ triggers
 
 ```
 pipeline {
+
+	options {
+    	timeout(time: 30, unit: 'MINUTES')
+    	buildDiscarder(logRotator(numToKeepStr: '10'))
+    	disableConcurrentBuilds()
+    	ansiColor('xterm')
+    }
+
     parameters {
         text(name: 'IMAGES', defaultValue: 'imageName1', description: '镜像')
     }
@@ -102,6 +110,81 @@ pipeline {
 
 
 
+### 高级
+
+注意区分 Jenkins Job 层 和 Pipeline 层：
+
+| 层级            | 概念                     | 定义位置                                             | 生命周期     | 典型内容                                 |
+| --------------- | ------------------------ | ---------------------------------------------------- | ------------ | ---------------------------------------- |
+| **Job 层**      | Jenkins 的“构建任务定义” | Jenkins UI / Job DSL / Configuration as Code (JCasC) | 在构建启动前 | 参数定义、触发器、构建脚本路径、SCM 配置 |
+| **Pipeline 层** | 实际运行的 CI/CD 脚本    | Jenkinsfile（Git 仓库中）                            | 在构建运行时 | stages、steps、agent、post 等逻辑        |
+
+#### 关于 pipline/job as code 最佳实践
+
+Seed Job DSL + Job DSL + pipline script from SCM
+
+Seed Job DSL 放在 jenkins 服务器上
+
+Job DSL 和 pipline script 放在 gitlab 上
+
+Seed Job 是通用入口，只负责扫描指定目录 DSL 文件。新增 Job，只需要在 GitLab 添加 DSL 文件即可，不用
+
+修改 Seed Job。
+
+
+
+| 层级                     | 存放内容                                               | 责任                            | 存储位置             |
+| ------------------------ | ------------------------------------------------------ | ------------------------------- | -------------------- |
+| **Seed Job（固定模板）** | 执行 DSL、拉取 GitLab 脚本                             | Jenkins 入口、自动化 Job 生成器 | Jenkins 本地         |
+| **Job DSL 文件**         | 定义 Jenkins Job 的元数据、参数（包括 Active Choices） | 负责“声明 Job 该怎么长什么样”   | GitLab（Infra 仓库） |
+| **Jenkinsfile**          | 定义 CI/CD 流程逻辑（Build / Deploy / Test 等）        | 负责“Job 具体要干什么”          | GitLab（项目仓库）   |
+
+
+
+关于动态参数逻辑
+
+| 说法                                                         | 是否正确   | 说明                                              |
+| ------------------------------------------------------------ | ---------- | ------------------------------------------------- |
+| “Declarative Pipeline 不能定义 Active Choices 参数”          | ✅ 正确     | Declarative Pipeline 语法内不支持定义动态参数逻辑 |
+| “Declarative Pipeline 不能与 Active Choices 一起使用”        | ❌ 错误     | 可以，通过 Job 层（UI 或 Job DSL）定义参数        |
+| “Declarative Pipeline + Job DSL 可以完全代码化动态参数”      | ✅ 正确     | 推荐做法，企业标准方案                            |
+| “Scripted Pipeline + Job DSL 才能代码化 Active Choices 参数” | ✅ 但不唯一 | Declarative 同样可以配合 DSL 使用                 |
+
+方式 1
+
+Declarative Pipeline + properties
+
+```
+// --- Job 配置 ---
+properties([
+    parameters([
+        choice(name: 'REGION', choices: ['dev', 'stage', 'prod'], description: '部署环境'),
+        string(name: 'GIT_BRANCH', defaultValue: 'main', description: 'Git 分支')
+    ]),
+    disableConcurrentBuilds(),
+    buildDiscarder(logRotator(numToKeepStr: '10'))
+])
+
+// --- 构建逻辑 ---
+node('builder') {
+    stage('Checkout') {
+        checkout([$class: 'GitSCM', branches: [[name: "*/${params.GIT_BRANCH}"]]])
+    }
+
+    stage('Build') {
+        sh "echo Building ${params.GIT_BRANCH} for ${params.REGION}"
+    }
+
+    stage('Deploy') {
+        sh "echo Deploying to ${params.REGION}"
+    }
+}
+
+```
+
+方式 2
+
+Declarative Pipeline  Job DSL
 
 
 
@@ -109,6 +192,32 @@ pipeline {
 
 
 
+
+
+关于 Pipline script 和 Pipline script from SCM
+
+在使用 Declarative Pipline 时，如果只在 jenkins pipline 中声明参数，那么放在 Pipline script 中可以在 UI 中自
+
+动配置；但是如果是放在 Pipline script from SCM 那么就不会自动配置
+
+
+
+
+
+#### 使用 Shared Library
+
+```
+@Library('dyb-shared@master') _
+node {
+    dyb.buildAndPush(
+        repo: params.GIT_REPO,
+        commit: params.GIT_COMMIT,
+        project: params.PROJECT,
+        service: params.SERVICE
+    )
+}
+
+```
 
 
 
