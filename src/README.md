@@ -14,7 +14,7 @@ actions:
     link: /notes/
     type: primary
   - text: 关于我
-    link: /person/
+    link: /person
     type: secondary
 
 features:
