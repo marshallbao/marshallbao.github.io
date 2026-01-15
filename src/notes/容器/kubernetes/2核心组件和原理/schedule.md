@@ -78,7 +78,7 @@ NodeAffinityPriority：基于节点亲和性计算分数。
 
 ##### nodeName
 
-将 pod 直接调度到指定的node节点上，会跳过scheduler的调度策略，该匹配规则时强制匹配
+将 pod 直接调度到指定的 node 节点上，会跳过 scheduler 的调度策略，该匹配规则时强制匹配
 
 ```
         spec:
@@ -100,6 +100,9 @@ spec:
 imagePullPolicy: IfNotPresent
 nodeSelector:
   disktype: ssd
+ 
+# 给主机打标签
+
 ```
 
 ##### Affinity
@@ -225,7 +228,7 @@ spec:
 | :---------------: | :----------------------------------------------------------- |
 |    NoSchedule     | 表示 k8s 不会将pod调度到具有该污点的Node上                   |
 | PreferNotSchedule | 表示k8s将尽量避免将pod调度到具有该污点的node上               |
-|    NotExecute     | 表示 k8s 将不会将pod调度到具有该污点的node上，同时node上已经存在的pod将驱逐出去 |
+|    NotExecute     | 表示 k8s 将不会将pod调度到具有该污点的node上，同时 node 上已经存在的 pod 将驱逐出去 |
 
 
 

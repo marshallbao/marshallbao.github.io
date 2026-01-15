@@ -128,3 +128,54 @@ $ git checkout master
 # 合并
 $git merge hot_fix
 ```
+
+### git  账号密码存储
+
+```
+1. 放在 git config 里，global 和 仓库下的都行
+
+[url "https://hairui:glpat-3-xxx@gitlab.blockbeat.hk"]
+        insteadOf = https://gitlab.blockbeat.hk
+
+2. 放在 .git-credentials 静态存储，分为 global 和 仓库
+   git config --global credential.helper store
+   git config credential.helper store
+
+
+3. 根据电脑系统放在自带的私钥管理里面
+   Mac
+   git config --global credential.helper osxkeychain
+
+
+windows
+git config --global credential.helper manager
+
+linux（需要桌面版）
+git config --global credential.helper libsecret
+
+
+4. GCM（还未测试）
+git config --global credential.helper manager-core
+
+
+
+
+其他操作
+查看
+git config --global credential.helper
+
+配置
+git config --global credential.helper store
+git config --global credential.helper manager
+
+修改
+git config --file=.git/config credential.helper "store"
+git config --file=~/.git_credentails --global credential.helper "store"
+
+取消
+git config --global --unset credential.helper
+```
+
+参考
+
+https://www.cnblogs.com/wutou/p/17585668.html

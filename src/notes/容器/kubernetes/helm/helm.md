@@ -29,7 +29,11 @@ helm search repo  bitnami/grafana -l
 
 helm pull bitnami/grafana --version 8.4.6
 
-
+# helm package
+helm lint ./explore/
+helm package explore/
+helm add repo 
+curl -v -u user:password http://nexus.bianjie.ai/repository/rainbow/  --upload-file explorer-0.1.0.tgz
 
 ```
 

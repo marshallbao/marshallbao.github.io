@@ -23,9 +23,7 @@ iptables 是 Linux 上一个强大的防火墙工具，用于管理网络包的�
 iptables、Ufw（Uncomplicated Firewall）、firewalld 和 nftables 是 Linux 上用于管理和配置网络流量规则的不同工具和框架。它们在功能上有所重叠，但也有各自的特点和使用场景。
 
 **iptables**
-iptables 是长期以来 Linux 系统中用于配置防火墙规则的标准工具。它操作复杂但功能强大，直接操作内核的 
-
-netfilter 框架来控制进出数据包。
+iptables 是长期以来 Linux 系统中用于配置防火墙规则的标准工具。它操作复杂但功能强大，直接操作内核的 netfilter 框架来控制进出数据包。
 
 特点：功能全面，灵活性高，但配置相对复杂，学习曲线陡峭。
 

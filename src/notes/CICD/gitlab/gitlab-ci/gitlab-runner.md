@@ -1,11 +1,32 @@
 # gitlab-runner
 
+
+
+### gitlab-runner 分类
+
+| **类型**               | **颗粒度**  | **管理权限** | **优点**                       |
+| ---------------------- | ----------- | ------------ | ------------------------------ |
+| **Instance (Shared)**  | 全局级别    | 管理员       | 资源利用率最高，维护成本最低   |
+| **Group**              | 部门/组级别 | 组管理员     | 灵活性适中，能满足团队私有需求 |
+| **Project (Specific)** | 项目级别    | 项目维护者   | 隔离性最强，环境最稳定         |
+
+
+
+添加不同类型的 runner
+
+全局 runner 在 admin 界面进行添加；group 级别 runner 在 group 页面进行添加； project 亦然；
+
+
+
+
+
 ### gitlab-runner 安装
 
 1、下载对应 gitlab 版本的 gitlab-runner 二进制文件 放置 /usr/local/bin/ 下
 
 ```
 # 下载二进制
+# 下载页面 https://gitlab-runner-downloads.s3.amazonaws.com/v15.11.0/index.html
 wget https://gitlab-runner-downloads.s3.amazonaws.com/v12.4.1/binaries/gitlab-runner-linux-amd64
 chmod +x gitlab-runner
 
@@ -16,7 +37,7 @@ useradd -m -d /home/gitlab-runner -u 1005 -g gitlab-runner gitlab-runner
 
 2、去 gitlab 生成 gitlab-runner 认证 token
 
-
+不同的入口对应不同类型/权限的 runner
 
 3、进行注册
 
