@@ -1,3 +1,13 @@
+# Dnsmasq
+
+
+
+安装部署
+
+
+
+
+
 普通域名
 
 hosts
@@ -7,3 +17,4 @@ hosts
 /etc/dnsmasq.conf
 
 /etc/dnsmasq.d/
+

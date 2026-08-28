@@ -11,12 +11,20 @@
 helm repo list
 helm repo remove bianjie
 helm repo add bianjie http://nexus.bianjie.ai/repository/bianjie
+
 # 需要认证的
 helm repo add bianjie http://nexus.bianjie.ai/repository/bianjie --username helm_puller --password KXWIuICN
 
+# OCR 协议
+helm pull oci://harbor.bianjie.ai/helm/default --version 0.2.7
+helm registry login harbor.bianjie.ai
+helm push default-0.2.8.tgz oci://harbor.bianjie.ai/helm
+
+
+# 更新本地 repo 仓库
 helm repo update
 
-# helm package
+# helm search
 helm search hub xxx
 helm search repo kong
 
@@ -63,7 +71,7 @@ helm get manifest  ingress-nginx -n x
 
 # 
 helm get values api -n kong
-
+helm get values api -n kong --all
 ```
 
 

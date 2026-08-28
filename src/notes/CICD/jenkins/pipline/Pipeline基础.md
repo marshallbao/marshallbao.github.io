@@ -31,6 +31,8 @@ Scripted Pipeline：Scripted Pipeline 允许你使用完整的 Groovy 脚本来�
 ```
 pipeline
 
+options
+
 parameters
 
 agent
@@ -104,7 +106,24 @@ pipeline {
 
 
 
-Scripted Pipeline
+### Scripted Pipeline
+
+
+
+### parameters VS  environment
+
+| **特性**     | **环境变量 (Environment Variables)**              | **参数 (Parameters)**                                     |
+| ------------ | ------------------------------------------------- | --------------------------------------------------------- |
+| **定义**     | 由 Jenkins 系统、插件或脚本预设的键值对。         | 由用户在点击“开始构建”时手动输入的值。                    |
+| **主要用途** | 存储配置信息（如 API 地址、凭据 ID、构建编号）。  | 提高 Job 的灵活性（如选择分支、设置部署版本、开关测试）。 |
+| **生效范围** | 通常在整个 Pipeline 或特定的 `stage` 内可见。     | 在整个 Pipeline 运行周期内全局可见。                      |
+| **变化性**   | 主要是静态配置或由系统生成（如 `BUILD_NUMBER`）。 | 每次构建时由用户根据需求动态决定。                        |
+
+**命名规范**（例如：参数用 `P_` 开头，环境变量用全大写）。
+
+**访问方式：** 环境变量可以直接通过变量名访问（如 `${APP_NAME}`），也可以通过 `env.APP_NAME`。而参数建议始终使用 `params.VAR_NAME` 以示区分。
+
+**一句话总结：** 参数是给**人**填的，环境变量是给**机器/程序**读的。
 
 
 

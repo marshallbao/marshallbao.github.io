@@ -236,7 +236,8 @@ spec:
 #设置污点
 kubectl taint nodes <node-name> <key>=<value>:<effect> 
 
-#kubectl taint nodes node02 node-type=production:NoSchedule
+# 示例
+kubectl taint nodes node02 node-type=production:NoSchedule
 node "node02" tainted
 
 

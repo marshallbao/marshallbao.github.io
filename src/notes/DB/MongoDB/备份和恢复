@@ -63,7 +63,7 @@ mongorestore 可以创建新的数据库或将数据添加到现有的数据库�
 
 mongorestore --db cschain_archived -u csarchived  /opt/sup-tech/
 
-mongorestore --db logs -u recorder --password "recorderpassword" /opt/errlog.bson
+mongorestore --db logs -u recorder --password "recorderpassword" --gzip /opt/errlog.bson
 
 mongodump -d rainbow-tmp -u rainbow -p rainbowpassword --gzip -o=.
 

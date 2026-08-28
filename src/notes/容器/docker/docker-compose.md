@@ -2,9 +2,56 @@
 
 ### 安装
 
-直接去 github 仓库 下载对应系统的二进制即可，例如
+直接去 github 仓库 下载对应系统的二进制即可，例如(废弃)
 
 https://github.com/docker/compose/releases/tag/v2.26.1
+
+
+
+现在推荐作为 docker 的插件来维护
+
+```
+# 如果可以
+apt-get update
+apt-get install docker-compose-plugin
+
+# 国内配置源安装
+
+# 1. 安装必要的证书和工具
+apt-get update
+apt-get install -y ca-certificates curl gnupg
+
+# 2. 创建并添加 Docker 官方的 GPG 密钥
+install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://mirrors.aliyun.com/docker-ce/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+chmod a+r /etc/apt/keyrings/docker.gpg
+
+# 3. 将 Docker 官方仓库写入你的软件源列表
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://mirrors.aliyun.com/docker-ce/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# 4. 再次更新并安装插件
+apt-get update
+apt-get install docker-compose-plugin
+
+
+
+# 手动安装
+DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
+mkdir -p $DOCKER_CONFIG/cli-plugins
+curl -SL https://github.com/docker/compose/releases/download/v5.1.2/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
+
+# 校验
+docker compose version
+
+
+# 插件目录
+# 也可以将插件放在 /usr/libexec/docker/cli-plugins/ 目录下，这是系统级； $HOME/.docker 这是用户级
+```
+
+
 
 
 
@@ -55,6 +102,25 @@ networks:
 
 volumes
 
+```
+
+
+# 只会停止并删除容器和网络
+docker compose down
+
+# 数据卷
+docker compose down -v
+
+#
+docker compose down -v --rmi local
+
+# 
+docker compose down -v --rmi all
+
+#
+docker volume rm zammad-docker-compose_postgresql-data 
+```
+
 
 
 env_file
@@ -83,7 +149,32 @@ services:
     container_name: ${NODE_CONTAINER_NAME:-nginx}
     ports:
       - "${WEB_PORT:-8080}:80" 
+## 优先级
+env_file 先把底层地基打好，而 environment 拥有最终决定权。如果两个地方定义了同一个变量，environment 里的值会覆盖掉 env_file 里的值。
 
+```
+
+
+
+profiles
+
+```
+version: '3.8'
+services:
+  # 1. 没有设置 profile，默认就会启动
+  web:
+    image: my-web-app
+    ports:
+      - "8080:8080"
+
+  # 2. 设置了 profile: minio，默认不启动
+  minio:
+    image: minio/minio
+    profiles:
+      - minio
+    ports:
+      - "9000:9000"
+ #  docker compose -d 默认不启动 minio,如果要启动 minio , docker compose --profile minio up -d 
 ```
 
 
@@ -96,24 +187,53 @@ docker-compose 单独启动某个服务
 # 启动
 docker-compose -f docker-compose-wallet.yml up -d wallet-binancesmart
 
-# 删除
-docker-compose  down
-
-# 停止
-docker-compose  -f docker-compose-wallet.yml  stop wallet-binancesmart-testnet
-
 # 启动
 docker-compose  start
 
 # 重启
 restart
 
+# 仅停止容器
+docker-compose  -f docker-compose-wallet.yml  stop wallet-binancesmart-testnet
+
+# 删除容器，删除网络
+docker-compose  down
+
+# 删除容器，删除网络，删除 volumes ,谨慎操作 
+docker-compose down -v
+
 # 强制重新创建
 up --force-recreate
 
-# 删除
+# 主要用于删除已经停止的容器
 rm
+
+# 校验 yml 格式
+docker compose config
+
+
 ```
+
+
+
+关于 volume 迁移
+
+```
+# 旧 docker-compose
+volumes:
+  langfuse_postgres_data:
+    driver: local
+
+# 新 docker-compose
+volumes:
+  langfuse_postgres_data:
+    external: true
+    name: langfuse_langfuse_postgres_data
+
+# 核心原理就是通过镜像将老 volume 里的数据打包，然后提前创建新的 volume 再把数据放进去；所以新的 docker-compose.yml 需要使用外部的 volume（不是本 docker-compose 创建，是提前创建的）
+```
+
+
 
 
 
@@ -258,7 +378,31 @@ networks:
 
 ```
 
+示例4：
 
+```
+# 重点是环境变量和 depends_on 锚定和复用
+services:
+  langfuse-worker:
+    image: repo.bianjie.ai/langfuse/langfuse-worker:3
+    restart: always
+    depends_on: &langfuse-depends-on
+    ports:
+      - 127.0.0.1:3030:3030
+    environment: &langfuse-worker-env
+      NEXTAUTH_URL: xxx
+      SALT: ${SALT:-mysalt}
+  langfuse-web:
+    image: repo.bianjie.ai/langfuse/langfuse:3
+    restart: always
+    depends_on: *langfuse-depends-on
+    ports:
+      - 3000:3000
+    environment:
+      <<: *langfuse-worker-env
+      LANGFUSE_INIT_ORG_ID: ${LANGFUSE_INIT_ORG_ID:-}
+      LANGFUSE_INIT_ORG_NAME: ${LANGFUSE_INIT_ORG_NAME:-}
+```
 
 参考
 

@@ -22,7 +22,7 @@ Swap 空间的作用可简单描述为：当系统的物理内存不够用的时
 # 创建一个空文件，具体大小的话对于小内存机器建议为内存的两倍
 sudo mkdir -v /var/cache/swap
 cd /var/cache/swap
-sudo dd if=/dev/zero of=swapfile bs=1024M count=32
+sudo dd if=/dev/zero of=swapfile bs=1024M count=16
 sudo chmod 600 swapfile
 
 # 将新建的文件转换为 swap 文件.

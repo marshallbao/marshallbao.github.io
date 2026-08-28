@@ -166,6 +166,7 @@ git config --global credential.helper
 
 配置
 git config --global credential.helper store
+
 git config --global credential.helper manager
 
 修改

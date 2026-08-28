@@ -27,7 +27,7 @@
 ```
 # 下载二进制
 # 下载页面 https://gitlab-runner-downloads.s3.amazonaws.com/v15.11.0/index.html
-wget https://gitlab-runner-downloads.s3.amazonaws.com/v12.4.1/binaries/gitlab-runner-linux-amd64
+wget https://gitlab-runner-downloads.s3.amazonaws.com/v15.11.0/binaries/gitlab-runner-linux-amd64
 chmod +x gitlab-runner
 
 # 新建用户及用户组下
@@ -48,6 +48,7 @@ gitlab-runner register --non-interactive --url "https://gitlab.bianjie.ai/" --re
 3、注册之后会生成 /etc/gitlab-runner/config.toml 配置文件
 
 ```
+# /etc/gitlab-runner/config.toml 
 root@LAPTOP-8P8KN0QD:/etc/gitlab-runner# cat config.toml
 concurrent = 1
 check_interval = 0
